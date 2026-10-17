@@ -1,0 +1,1728 @@
+#root {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  background: #ffffff;
+}
+
+html,
+body {
+  background: #ffffff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* Study UI — Office theme palette (teal primary, orange secondary, green tertiary) */
+
+.study-theme {
+  --study-bg: #ffffff;
+  --study-surface: #ffffff;
+  --study-ink: #262626;
+  --study-ink2: #3f3f3f;
+  --study-ink3: #727272;
+  --study-rule: #d8d8d8;
+  --study-header: #0c0c0c;
+  --study-neutral: #f2f2f2;
+  --study-panel: #f2f2f2;
+  --study-wash: #dbeaed;
+
+  --study-accent: #2c4950;
+  --study-accent-bright: #5993a0;
+  --study-accent-soft: #dbeaed;
+  --study-accent-mid: #b8d6dc;
+  --study-accent-ink: #2c4950;
+
+  --study-secondary: #d16e4c;
+  --study-secondary-soft: #f4e1da;
+  --study-secondary-mid: #eac4b5;
+  --study-secondary-deep: #ac4b2b;
+  --study-secondary-ink: #73311c;
+
+  --study-tertiary: #85a55f;
+  --study-tertiary-soft: #e6eddd;
+  --study-tertiary-mid: #cddabd;
+  --study-tertiary-deep: #637b46;
+  --study-tertiary-ink: #42522f;
+
+  --study-ok: #42522f;
+  --study-err: #73311c;
+  --study-warn: #ac4b2b;
+  min-height: 100vh;
+  background: var(--study-bg);
+  color: var(--study-ink);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+.eval-root {
+  min-height: 100vh;
+}
+
+.study-app-header {
+  padding: 20px 32px 0;
+  border-bottom: 1px solid var(--study-rule);
+  background: var(--study-surface);
+}
+
+.study-title {
+  margin: 0 0 14px;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--study-header);
+}
+
+.study-header-row1 {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 0 12px;
+}
+
+.study-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.study-field-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--study-ink3);
+}
+
+.study-field-select {
+  min-width: 9rem;
+  max-width: 24rem;
+  padding: 4px 26px 4px 8px;
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--study-ink);
+  background-color: var(--study-surface);
+  border: 1px solid var(--study-rule);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.study-field-select--bold {
+  font-weight: 700;
+}
+
+.study-field-select:hover:not(:disabled) {
+  border-color: var(--study-accent-bright);
+}
+
+.study-field-select:focus-visible {
+  outline: 2px solid var(--study-accent-mid);
+  outline-offset: 1px;
+}
+
+.study-field-select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.study-muted {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--study-ink3);
+}
+
+.study-main-pad {
+  padding: 6px 32px 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* CFG tab shell */
+
+.study-tree-shell {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: min(72vh, 920px);
+  overflow: hidden;
+}
+
+.study-tree-area {
+  background: var(--study-surface);
+  padding: 2px 12px 12px;
+  overflow: auto;
+  /* Allow the canvas to be wider than the container */
+  min-width: 0;
+}
+
+#study-tree-canvas,
+#study-cfg-tree-canvas {
+  display: block;
+  /* Canvas sizes itself; never shrink it */
+  flex-shrink: 0;
+}
+
+.study-unassigned-count {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--study-ink2, #64748b);
+}
+
+.study-unassigned-group {
+  border-bottom: 0.5px solid var(--study-rule);
+}
+
+.study-unassigned-group:last-child {
+  border-bottom: none;
+}
+
+.study-unassigned-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px 4px;
+}
+
+.dbb-case-list .study-unassigned-group-head {
+  padding: 10px 9px 4px;
+}
+
+.study-unassigned-reason-chip {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--study-secondary-ink);
+  background: rgba(209, 110, 76, 0.1);
+  border: 1px solid rgba(209, 110, 76, 0.28);
+  border-radius: 999px;
+  padding: 2px 7px;
+}
+
+.study-unassigned-group-count {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  color: var(--study-ink3, #94a3b8);
+}
+
+.study-tl-era-cases-suffix {
+  font-weight: 300;
+  opacity: 0.9;
+}
+
+/* Human eval */
+
+.study-code-inline {
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--study-wash);
+  border: 0.5px solid var(--study-rule);
+}
+
+/* Doctrine tree — open cases panel */
+
+.study-nd-cases-open {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  border: 1px solid var(--study-accent);
+  border-radius: 6px;
+  background: var(--study-accent);
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+.study-nd-cases-open .study-tl-era-cases-suffix {
+  font-weight: 300;
+}
+
+.study-nd-cases-open:hover {
+  background: var(--study-accent-bright);
+  border-color: var(--study-accent-bright);
+}
+
+/* Slide-over: case list + Opinion | Raw */
+
+.study-case-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10040;
+  background: rgba(38, 38, 38, 0.18);
+}
+
+.study-case-drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10041;
+  width: min(92vw, 1400px);
+  min-width: min(100%, 360px);
+  height: auto;
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--study-surface);
+  border-left: 1px solid var(--study-rule);
+}
+
+.study-case-drawer-panel--db {
+  left: 0;
+  right: 0;
+  width: 100vw;
+  min-width: 0;
+  max-width: 100vw;
+  border-left: none;
+  background: var(--study-panel, #f2f2f2);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+.study-case-drawer-panel {
+    width: 100vw;
+    min-width: 0;
+  }
+}
+
+.study-case-drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 0.5px solid var(--study-rule);
+  background: var(--study-wash, #dbeaed);
+  flex-shrink: 0;
+}
+
+.study-case-drawer-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--study-ink);
+}
+
+.study-case-drawer-sub {
+  font-size: 8px;
+  color: var(--study-ink3);
+  letter-spacing: 0.06em;
+  margin-top: 1px;
+}
+
+.study-case-drawer-close {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 8px;
+  cursor: pointer;
+  border: 0.5px solid var(--study-rule);
+  border-radius: 4px;
+  background: var(--study-surface);
+  color: var(--study-ink2);
+}
+
+.study-case-drawer-close:hover {
+  border-color: var(--study-accent);
+  color: var(--study-accent);
+}
+
+.study-case-drawer-body--db {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 10px;
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 8px;
+  background: var(--study-panel, #f2f2f2);
+}
+
+.study-case-drawer-detail-section {
+  border: 1px solid var(--study-rule);
+  border-radius: 8px;
+  padding: 10px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.study-case-drawer-detail-meta {
+  flex: 0 0 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.study-case-drawer-resize {
+  flex: 0 0 6px;
+  margin: -3px 0;
+  border-radius: 3px;
+  cursor: row-resize;
+  background: transparent;
+}
+
+.study-case-drawer-resize:hover,
+.study-case-drawer-resize.dragging {
+  background: rgba(89, 147, 160, 0.25);
+}
+
+.dbb-detail-headline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.dbb-detail-casename {
+  font-size: 15px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.study-case-drawer-3col {
+  flex: 1 1 0%;
+  min-height: calc(100dvh - 14rem);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.dbb-opinion-panel-head {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.dbb-case-panel--drawer {
+  background: var(--study-wash, #dbeaed);
+  grid-template-rows: auto 1fr;
+}
+
+.study-case-drawer-panel--db .study-case-drawer-head {
+  background: var(--study-wash, #dbeaed);
+}
+
+.study-case-drawer-panel--db .dbb-opinion-panel {
+  background: #ffffff;
+}
+
+.study-case-drawer-panel--db .dbb-opinion-scrollbox {
+  background: #ffffff;
+  flex: 1 1 0%;
+  min-height: 0;
+}
+
+.study-case-drawer-empty {
+  font-size: 10px;
+  color: var(--study-ink3);
+  padding: 12px 0;
+}
+
+.study-case-drawer-lineage {
+  margin-bottom: 8px;
+}
+
+.study-case-drawer-node-details {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  background: rgba(99, 102, 241, 0.06);
+  font-size: 10px;
+  line-height: 1.4;
+  display: grid;
+  gap: 6px;
+}
+
+.study-case-drawer-node-details-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--study-accent-bright, #5993a0);
+  text-align: left;
+}
+
+.study-case-drawer-node-details-toggle:hover {
+  color: var(--study-accent, #2c4950);
+}
+
+.study-case-drawer-node-details-hint {
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--study-ink3, #727272);
+}
+
+.study-case-drawer-node-details-body {
+  display: grid;
+  gap: 6px;
+}
+
+/* Doctrine DB browser */
+
+.dbb-case-panel {
+  border: 1px solid var(--study-rule);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--study-surface);
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: 8px;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.dbb-case-panel-top {
+  display: grid;
+  gap: 6px;
+}
+
+.dbb-count-chip {
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--study-rule);
+  background: var(--study-wash);
+  color: var(--study-ink2);
+}
+
+.dbb-count-chip.ok {
+  background: var(--study-tertiary-soft);
+  color: var(--study-ok);
+}
+
+.dbb-check-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--study-ink2);
+  cursor: pointer;
+}
+
+.dbb-check-label input {
+  margin: 0;
+}
+
+.dbb-case-list {
+  overflow: auto;
+  border: 1px solid var(--study-rule);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.dbb-empty-list {
+  padding: 12px;
+  font-size: 10px;
+  color: var(--study-ink3);
+}
+
+.dbb-case-row {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--study-rule);
+  text-align: left;
+  background: transparent;
+  padding: 8px 9px;
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+  border-left: 3px solid transparent;
+}
+
+.dbb-case-row:hover {
+  background: var(--study-neutral);
+}
+
+.dbb-case-row:last-child {
+  border-bottom: 0;
+}
+
+.dbb-case-row.selected {
+  background: var(--study-wash);
+  border-left-color: var(--study-accent);
+}
+
+.dbb-case-row-title-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.dbb-case-row-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--study-ink);
+}
+
+.dbb-case-selected-marker {
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--study-accent);
+  border: 1px solid var(--study-accent);
+  border-radius: 999px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+.dbb-case-row-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-size: 9px;
+  color: var(--study-ink3);
+  line-height: 1.3;
+}
+
+.dbb-case-row-meta-sep {
+  opacity: 0.7;
+}
+
+.study-confidence-chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+  padding: 2px 7px;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+
+.study-confidence-chip--compact {
+  font-size: 8px;
+  padding: 1px 5px;
+}
+
+.dbb-opinion-panel {
+  border: 1px solid var(--study-rule);
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.dbb-opinion-scrollbox {
+  border: 1px solid var(--study-rule);
+  border-radius: 6px;
+  padding: 8px;
+  background: #fff;
+  overflow: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+/* ── Derivation cards ──────────────────────────────────────────── */
+
+.study-cfg-deriv-breadcrumb {
+  font-size: 9px;
+  color: var(--study-ink3);
+  margin-bottom: 4px;
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------------ */
+
+.study-cit-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 8px;
+  border-bottom: 0.5px solid var(--study-rule);
+}
+
+.study-cit-ctl {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--study-ink3);
+}
+
+.study-cit-ctl select {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  padding: 3px 5px;
+  color: var(--study-ink);
+  background: var(--study-surface);
+  border: 0.5px solid var(--study-rule);
+}
+
+.study-cit-zoom {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  font-size: 10px;
+}
+
+.study-cit-zoom button {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  min-width: 24px;
+  padding: 2px 6px;
+  cursor: pointer;
+  color: var(--study-ink);
+  background: var(--study-surface);
+  border: 0.5px solid var(--study-rule);
+}
+
+.study-cit-zoom button:hover { background: var(--study-neutral); }
+
+.study-cit-note {
+  margin: 8px 0 0;
+  max-width: 108ch;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--study-ink2);
+}
+
+.study-cit-body {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  min-height: 0;
+  margin-top: 8px;
+}
+
+.study-cit-stage {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0.5px solid var(--study-rule);
+}
+
+
+.study-cit-svg {
+  display: block;
+  width: 100%;
+}
+
+.study-cit-side {
+  flex: 0 0 292px;
+  padding-left: 14px;
+  border-left: 0.5px solid var(--study-rule);
+  overflow-y: auto;
+  max-height: min(72vh, 720px);
+}
+
+.study-cit-side h4 {
+  margin: 14px 0 5px;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--study-ink3);
+}
+
+.study-cit-side h4:first-child { margin-top: 0; }
+
+.study-cit-stats {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.study-cit-stats td {
+  padding: 1.5px 0;
+  font-size: 10.5px;
+  color: var(--study-ink2);
+  vertical-align: top;
+}
+
+.study-cit-stats td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--study-ink);
+}
+
+.study-cit-blurb {
+  margin: 6px 0 0;
+  font-size: 9.5px;
+  line-height: 1.5;
+  color: var(--study-ink3);
+}
+
+.study-cit-prov {
+  margin: 0;
+  font-size: 9px;
+  line-height: 1.55;
+  color: var(--study-ink3);
+  overflow-wrap: anywhere;
+}
+
+.study-cit-warn { color: var(--study-err); }
+
+.study-cit-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.study-cit-legend-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 2px 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  text-align: left;
+  color: var(--study-ink2);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.study-cit-legend-row:hover { color: var(--study-ink); }
+
+.study-cit-legend-row.off { opacity: 0.35; }
+
+.study-cit-swatch {
+  flex: 0 0 9px;
+  width: 9px;
+  height: 9px;
+  margin-top: 3px;
+  border-radius: 1px;
+}
+
+.study-cit-detail { font-size: 10.5px; }
+
+.study-cit-detail-name {
+  font-weight: 700;
+  color: var(--study-ink);
+  line-height: 1.4;
+}
+
+.study-cit-detail dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1px 8px;
+  margin: 6px 0 0;
+}
+
+.study-cit-detail dt { color: var(--study-ink3); }
+
+.study-cit-detail dd { margin: 0; color: var(--study-ink); }
+
+.study-cit-detail p { margin: 5px 0 0; }
+
+.study-cit-detail a {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 9.5px;
+  color: var(--study-accent);
+}
+
+.study-split-chip {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--study-rule);
+  background: var(--study-neutral, #f2f2f2);
+  color: var(--study-ink2);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.study-split-chip--train {
+  border-color: var(--study-accent-bright, #5993a0);
+  background: var(--study-accent-soft, #dbeaed);
+  color: var(--study-accent, #2c4950);
+}
+
+.study-split-chip--dev {
+  border-color: var(--study-secondary, #d16e4c);
+  background: var(--study-secondary-soft, #f4e1da);
+  color: var(--study-secondary-ink, #73311c);
+}
+
+.study-split-chip--test {
+  border-color: var(--study-tertiary, #85a55f);
+  background: var(--study-tertiary-soft, #e6eddd);
+  color: var(--study-tertiary-ink, #42522f);
+}
+
+/* -- SVG -- */
+
+.study-cit-edge, .study-cit-node {
+  vector-effect: non-scaling-stroke;
+}
+
+.study-cit-edge {
+  fill: none;
+  stroke: #9aa3ae;
+  stroke-opacity: 0.2;
+}
+
+.study-cit-edge.hl-out { stroke: #426e77; stroke-opacity: 0.95; stroke-width: 1.8; }
+
+.study-cit-edge.hl-in { stroke: #d16e4c; stroke-opacity: 0.95; stroke-width: 1.8; }
+
+.study-cit-edge.dim { stroke-opacity: 0.05; }
+
+.study-cit-edge.plain { stroke: #b5b5b5; stroke-opacity: 0.55; stroke-width: 0.9; }
+
+.study-cit-node {
+  stroke: var(--study-surface);
+  stroke-width: 1;
+  cursor: pointer;
+}
+
+.study-cit-node.dim { opacity: 0.12; }
+
+/* The clicked case: a surface-coloured ring separates the red fill from the halo
+   drawn around it, so the outline reads at any zoom. Its radius is untouched —
+   node size is the in-degree encoding and must keep meaning what it says. */
+
+.study-cit-node.sel { stroke: var(--study-surface); stroke-width: 2; }
+
+.study-cit-halo {
+  fill: none;
+  stroke-width: 1.6;
+  stroke-opacity: 0.85;
+  pointer-events: none;
+}
+
+.study-cit-band { fill: #000; fill-opacity: 0.022; }
+
+.study-cit-axis { stroke: var(--study-rule); }
+
+.study-cit-median { stroke-dasharray: 3 2; stroke-width: 1.25; }
+
+.study-cit-marker { stroke: #85a55f; stroke-width: 4.5; stroke-dasharray: none; }
+
+.study-cit-svg text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.study-cit-marker-label {
+  fill: #85a55f;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.study-cit-median-label {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.study-cit-hist-bar { stroke: var(--study-surface, #fff); stroke-width: 0.4; }
+
+.study-cit-cite-glow {
+  fill: #d7e6cc;
+  stroke: none;
+  pointer-events: none;
+}
+
+.study-cit-cite-ring {
+  fill: none;
+  stroke: #85a55f;
+  stroke-width: 1.75;
+  pointer-events: none;
+}
+
+.study-cit-hub-label {
+  fill: #262626;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  pointer-events: none;
+}
+
+.study-cit-legend-ring {
+  fill: none;
+  stroke: #85a55f;
+  stroke-width: 2.25;
+}
+
+.study-cit-legend-em {
+  font-style: italic;
+}
+
+.study-cit-legend-plot-label {
+  fill: var(--study-ink, #262626);
+  font-size: 16px;
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.study-cit-axis-text {
+  fill: var(--study-ink3);
+  font-size: 16px;
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.study-cit-panel-title {
+  fill: var(--study-ink3);
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Case-key provenance chip (header)
+
+   Says where the case_id -> opinion_id join came from. Amber when it was
+   re-derived from the current database rather than recorded by the run, because
+   case ids are reassigned on regeneration and a stale join is silent.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Tree tab: court/jurisdiction highlight panel
+   ───────────────────────────────────────────────────────────────────────── */
+
+.study-court-panel {
+  position: relative;
+  border-bottom: 1px solid var(--study-rule);
+  padding: 4px 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.study-court-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+
+.study-court-title {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0;
+  color: var(--study-header);
+}
+
+.study-court-chips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.study-court-chip {
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(89, 147, 160, 0.4);
+  background: rgba(89, 147, 160, 0.1);
+  color: var(--study-accent-bright);
+  cursor: pointer;
+}
+
+.study-court-clear {
+  font-size: 10px;
+  background: none;
+  border: 1px solid var(--study-rule);
+  border-radius: 5px;
+  padding: 1px 7px;
+  cursor: pointer;
+  color: var(--study-ink3);
+}
+
+.study-court-facets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.study-court-facet {
+  position: relative;
+}
+
+.study-court-facet-head {
+  font-size: 12px;
+  padding: 4px 11px;
+  border-radius: 6px;
+  border: 1px solid var(--study-rule);
+  background: none;
+  cursor: pointer;
+}
+
+.study-court-facet-head.open {
+  border-color: rgba(89, 147, 160, 0.5);
+  background: rgba(89, 147, 160, 0.07);
+}
+
+.study-court-values {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  left: 0;
+  margin-top: 3px;
+  width: 230px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--study-surface);
+  border: 1px solid var(--study-rule);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.study-court-value {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10px;
+  padding: 3px 6px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.study-court-value:hover {
+  background: rgba(89, 147, 160, 0.08);
+}
+
+.study-court-value.on {
+  background: rgba(89, 147, 160, 0.16);
+  color: var(--study-accent-bright);
+  font-weight: 700;
+}
+
+.study-court-empty {
+  font-size: 10px;
+  padding: 3px 6px;
+}
+
+.study-court-ramp {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 2;
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--study-ink3);
+  pointer-events: none;
+}
+
+.study-court-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  border: 1px solid var(--study-rule);
+  border-radius: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Tree tab: vertical split, tree above and chronology below
+   ───────────────────────────────────────────────────────────────────────── */
+
+.study-tree-split {
+  min-height: min(88vh, 1100px);
+}
+
+.study-tree-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.study-tree-pane--chron {
+  flex: 0 0 auto;
+  border-top: 0.5px solid var(--study-rule);
+  overflow: auto;
+}
+
+.study-tree-handle {
+  height: 7px;
+  flex: 0 0 7px;
+  cursor: row-resize;
+  background:
+    linear-gradient(to bottom, transparent 2px, var(--study-rule) 3px, transparent 4px);
+}
+
+.study-tree-handle:hover,
+.study-tree-handle.dragging {
+  background: rgba(89, 147, 160, 0.25);
+}
+
+.study-tree-chron-side {
+  border-left: 0.5px solid var(--study-rule);
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+.study-tree-chron-side {
+    border-left: none;
+    border-top: 0.5px solid var(--study-rule);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Tree tab: "find case in tree" search panel (previously unstyled)
+   ───────────────────────────────────────────────────────────────────────── */
+
+.cfg-case-search-box {
+  border-bottom: 0.5px solid var(--study-rule);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.study-court-extra {
+  margin-left: auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.cfg-depth-controls {
+  order: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--study-ink2);
+}
+
+.cfg-case-search-controls {
+  order: 1;
+}
+
+.cfg-case-search-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cfg-case-search-controls .cfg-case-search-header {
+  gap: 10px;
+}
+
+.cfg-case-search-controls .cfg-case-search-row {
+  width: 260px;
+}
+
+.cfg-case-search-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cfg-case-search-header-main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cfg-unassigned-toggle {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 0.5px solid rgba(209, 110, 76, 0.45);
+  border-radius: 4px;
+  background: var(--study-surface);
+  color: var(--study-secondary-ink);
+}
+
+.cfg-unassigned-toggle:hover,
+.cfg-unassigned-toggle.is-open {
+  background: rgba(209, 110, 76, 0.1);
+}
+
+.cfg-unassigned-toggle .study-unassigned-count {
+  color: var(--study-secondary-ink);
+}
+
+.dbb-case-row-note {
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--study-ink3);
+  margin-top: 4px;
+}
+
+.cfg-case-search-title {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cfg-case-search-count,
+.cfg-case-search-error,
+.cfg-case-search-empty {
+  font-size: 10px;
+  color: var(--study-ink3);
+}
+
+.cfg-case-search-error {
+  color: var(--study-err);
+}
+
+.cfg-case-search-row {
+  display: flex;
+  gap: 6px;
+}
+
+.cfg-case-search-input {
+  flex: 1;
+  font-size: 11px;
+  padding: 3px 7px;
+  border: 1px solid var(--study-rule);
+  border-radius: 5px;
+}
+
+.cfg-case-search-clear {
+  font-size: 10px;
+  padding: 2px 8px;
+  border: 1px solid var(--study-rule);
+  border-radius: 5px;
+  background: none;
+  cursor: pointer;
+}
+
+.cfg-case-search-derivation {
+  font-size: 10px;
+  color: var(--study-ink3);
+}
+
+.cfg-case-search-derivation-path {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9px;
+}
+
+.cfg-case-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.cfg-case-search-result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  text-align: left;
+  font-size: 10px;
+  padding: 3px 7px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: none;
+  cursor: pointer;
+}
+
+.cfg-case-search-result:hover {
+  background: rgba(89, 147, 160, 0.07);
+}
+
+.cfg-case-search-result.active {
+  border-color: rgba(66, 110, 119, 0.45);
+  background: rgba(66, 110, 119, 0.09);
+}
+
+.cfg-case-search-result-name {
+  font-weight: 700;
+}
+
+.cfg-case-search-result-meta,
+.cfg-case-search-result-derivation {
+  color: var(--study-ink3);
+  font-size: 9px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Citation views: the faded tier
+
+   Separate from `.dim`, which means "some highlight excluded this". `.faded`
+   means "kept deliberately, but not the subject": the descendants of a case
+   above the in-degree threshold. Lighter than full strength, far heavier than
+   dim, so a line of authority stays legible behind its hub.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.study-cit-node.ghost { stroke: #d0d0d0; stroke-width: 0.6; }
+
+.study-cit-edge.ghost { stroke: #d5d5d5; stroke-opacity: 0.85; }
+
+.study-cit-node.circuit-bg { opacity: 0.16; }
+
+.study-cit-edge.circuit-bg { stroke-opacity: 0.05; }
+
+.study-cit-node.faded { opacity: 0.3; }
+
+.study-cit-edge.faded { stroke-opacity: 0.1; }
+
+/* Threshold slider in the view toolbar. */
+
+.study-cit-ctl input[type="range"] {
+  width: 92px;
+  vertical-align: middle;
+}
+
+.study-cit-thresh-value {
+  font-variant-numeric: tabular-nums;
+  min-width: 1.6em;
+  display: inline-block;
+  text-align: right;
+}
+
+/* A finished case is tinted by the tree-agreement judgement, so the list
+   reads as a verdict map rather than a done/not-done binary. Selection is
+   still the left bar, so tint and selection stack. */
+
+.ann-tree-box {
+  padding: 8px 10px;
+  border: 1px solid var(--study-accent-mid);
+  border-radius: 4px;
+  background: var(--study-accent-soft);
+  font-size: 11px;
+}
+
+/* Grid only once open; a <details> that is `display: grid` renders its own
+   summary as a grid item and the disclosure triangle drifts out of line. */
+
+.ann-tree-box[open] > .ann-tree-row,
+.ann-tree-box > .ann-tree-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 6px;
+  margin-top: 3px;
+}
+
+.ann-tree-summary {
+  cursor: pointer;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--study-accent-ink);
+}
+
+.ann-tree-summary::marker {
+  color: var(--study-accent);
+}
+
+/* The leaf label rides along in the summary, so a collapsed box still answers
+   "what did the tree say". */
+
+.ann-tree-summary-leaf {
+  margin-left: 8px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 700;
+  color: var(--study-ink);
+}
+
+.ann-label-original {
+  font-weight: 300;
+  color: var(--study-ink3);
+}
+
+.ann-tree-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 6px;
+}
+
+.ann-tree-key {
+  color: var(--study-ink3);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ann-tree-desc {
+  margin: 4px 0 0;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--study-ink2);
+}
+
+/* Auto-treatise lineage ------------------------------------------------ */
+
+.ann-node-id {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  padding: 1px 4px;
+  margin-left: 6px;
+  border-radius: 3px;
+  background: #fff;
+  border: 1px solid var(--study-rule);
+  color: var(--study-ink3);
+}
+
+.ann-lineage {
+  margin-top: 8px;
+  border-top: 1px solid var(--study-accent-mid);
+  padding-top: 6px;
+}
+
+.ann-lineage-summary {
+  cursor: pointer;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--study-accent-ink);
+  list-style: revert;
+}
+
+.ann-lineage-summary::marker {
+  color: var(--study-accent);
+}
+
+.ann-lineage-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0 0 0 10px;
+  /* One rule down the left edge reads as the root-to-leaf spine. */
+  border-left: 2px solid var(--study-accent-mid);
+  display: grid;
+  gap: 10px;
+}
+
+.ann-step {
+  display: grid;
+  gap: 3px;
+}
+
+.ann-step-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ann-step-label {
+  font-size: 11px;
+  color: var(--study-ink);
+  font-weight: 700;
+}
+
+.ann-side {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--study-neutral);
+  color: var(--study-ink3);
+}
+
+.ann-side-left {
+  background: var(--study-accent-mid);
+  color: var(--study-accent-ink);
+}
+
+.ann-side-right {
+  background: var(--study-secondary-mid);
+  color: var(--study-secondary-ink);
+}
+
+/* Confidence is the thing that decides whether to trust a branch, so low
+   reads warm and high stays quiet. */
+
+.ann-conf {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--study-neutral);
+  color: var(--study-ink3);
+}
+
+.ann-conf-high {
+  background: var(--study-tertiary-soft);
+  color: var(--study-tertiary-ink);
+}
+
+.ann-conf-low {
+  background: var(--study-secondary-soft);
+  color: var(--study-secondary-deep);
+}
+
+.ann-step-axis {
+  margin: 0;
+  font-size: 10px;
+  font-style: italic;
+  color: var(--study-ink2);
+}
+
+.ann-step-why {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.55;
+  color: var(--study-ink2);
+}
+
+.ann-lineage-foot {
+  margin: 8px 0 0;
+  font-size: 9px;
+  color: var(--study-ink3);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* -- Per-branch agreement ------------------------------------------------ */
+
+.ann-lineage-hint {
+  margin: 4px 0 8px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--study-ink3);
+}
+
+/* The marked branches are the finding, so they get the left rule and the
+   unmarked ones stay plain — the eye should be able to find the depth the
+   sources reach without reading the labels. */
+
+.ann-step-agree {
+  padding-left: 7px;
+  border-left: 2px solid var(--study-tertiary-deep);
+}
+
+.ann-step-disagree {
+  padding-left: 7px;
+  border-left: 2px solid var(--study-secondary-deep);
+}
+
+.ann-step-verdict {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 3px;
+}
+
+.ann-step-verdict-key {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--study-ink3);
+}
+
+.ann-step-check {
+  font-size: 10px;
+}
+
+.ann-step-verdict-none {
+  font-size: 9px;
+  font-style: italic;
+  color: var(--study-ink3);
+}
+
+/* How deep the sources go, on the collapsed summary, so the box answers the
+   question without being opened. */
+
+.ann-tree-reach {
+  margin-left: auto;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--study-tertiary-soft);
+  color: var(--study-tertiary-ink);
+  font-size: 9px;
+  letter-spacing: 0.02em;
+}
+
+/* Selection provenance: the citation count that put a case in the sample. */
+
+.ann-cites {
+  justify-self: start;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--study-neutral);
+  color: var(--study-ink3);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Emphasised when the count is what actually decided selection, rather than
+   court authority breaking a tie further down. */
+
+.ann-cites.on-basis {
+  background: var(--study-accent-soft);
+  color: var(--study-accent-ink);
+}
+
+/* Editing the denominator: values read as population members, not as a
+   highlight, so they take the tertiary hue rather than the accent. */
+
+.study-court-value-tail {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cfg-depth-controls input[type="range"] {
+  width: 70px;
+}
