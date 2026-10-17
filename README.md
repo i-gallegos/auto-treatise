@@ -1,8 +1,8 @@
 # Auto-Treatise
 
-![Auto-Treatise UI demo](ui/demo.gif)
+Code for *Auto-Treatise: Mapping Interpretive Ambiguity in Case Law*
 
-Code for *Auto-Treatise: Mapping Interpretive Ambiguity in Case Law*.
+![Auto-Treatise UI demo](ui/demo.gif)
 
 Given the cases that cite a base case, the pipeline:
 
@@ -29,7 +29,9 @@ Run every command from the repository root.
 
 ## Running the pipeline
 
-Example: A tree for *Trump v. CASA* (CourtListener cluster 10618550, via `https://www.courtlistener.com/opinion/10618550/trump-v-casa-inc/`). Run from the repository root. Everything is written under `doctrines/casa/`. `RUN` is the name you give the tree run.
+Example: A tree for *Trump v. CASA*
+- CourtListener cluster 10618550
+- `https://www.courtlistener.com/opinion/10618550/trump-v-casa-inc/`
 
 ```bash
 D=casa
